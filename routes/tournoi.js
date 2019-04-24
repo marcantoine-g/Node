@@ -16,9 +16,17 @@ module.exports = {
         });
     },
     addTournoiPage: (req,res) => {
-        res.render('add-tournoi.ejs', {
-            title: 'Mon tournoi de Tarot'
-            ,message: ''
+        let query = "SELECT * FROM `joueur";
+
+        db.query(query, (err, result) => {
+            if (err) {
+                res.redirect('/');
+            }
+            res.render('add-tournoi.ejs', {
+                title: 'Mon tournoi de Tarot',
+                message: '',
+                players : result
+            });
         });
     },
     addTournoi: (req, res) =>{
@@ -70,7 +78,7 @@ module.exports = {
         }
 
         // Création d'un tournoi
-        let queryCreationTournoi = "INSERT INTO `tournoi` (tour,score) VALUES('"+nb_tour+"', '" + 0 +"')";
+        let queryCreationTournoi = "INSERT INTO `tournoi` (tour,score, encours) VALUES('"+nb_tour+"', '" + 0 +"', 1)";
     
         db.query(queryCreationTournoi, (err, result) => {
             if (err) {
@@ -267,6 +275,42 @@ module.exports = {
         });
     },
     recapTournoi : (req, res) => {
+        
+        if (req.body.table_id){
+            let table_id = req.body.table_id;
+            let joueur_nord = req.body.joueur_nord;
+            let joueur_sud = req.body.joueur_sud;
+            let joueur_est = req.body.joueur_est;
+            let joueur_ouest = req.body.joueur_sud;
+            let score_nord = req.body.score_nord;
+            let score_sud = req.body.score_sud;
+            let score_est = req.body.score_est;
+            let score_ouest = req.body.score_ouest;
+
+            for(let i=0; i<table_id.length; i++){
+                db.query("UPDATE `joueur` SET `score` ="+score_nord[i]+" WHERE `id`="+joueur_nord[i] , (err,result)=>{
+                    if (err){
+                        return res.status(500).send(err);
+                    }
+                });
+                db.query("UPDATE `joueur` SET `score` ="+score_sud[i]+" WHERE `id`="+joueur_sud[i] , (err,result)=>{
+                    if (err){
+                        return res.status(500).send(err);
+                    }
+                });
+                db.query("UPDATE `joueur` SET `score` ="+score_est[i]+" WHERE `id`="+joueur_est[i] , (err,result)=>{
+                    if (err){
+                        return res.status(500).send(err);
+                    }
+                });
+                db.query("UPDATE `joueur` SET `score` ="+score_ouest[i]+" WHERE `id`="+joueur_ouest[i] , (err,result)=>{
+                    if (err){
+                        return res.status(500).send(err);
+                    }
+                });
+            }
+        }
+
         let tournoiId = req.params.id;
         let queryTournoiFini = "UPDATE `tournoi` SET `encours`=0 WHERE `id` = "+tournoiId;
         let queryJoueur = "SELECT * FROM `joueur` WHERE `id_tournoi` = " + tournoiId;
