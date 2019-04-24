@@ -41,7 +41,6 @@ module.exports = {
 
         // Cas particulier ou on n'ajoute que une table 
         if(nb_table == 1){
-            console.log(joueurs_nord);
             for (let i=0; i<joueurs_nord.length; i++){
                 tmp += joueurs_nord[i];
             }
@@ -93,7 +92,6 @@ module.exports = {
 
         // Ajout des joueurs Nord
         function ajoutNord(id_tournoi){
-            console.log(joueurs_nord);
             for (let i=0; i<joueurs_nord.length; i++){
                 nom_prenom_nord = joueurs_nord[i].split(' ');
                 let queryAjoutJoueurNord = "INSERT INTO `joueur` (nom, prenom, score, classement, id_tournoi) VALUES ('"+nom_prenom_nord[0]+"' , '"+nom_prenom_nord[1]+"','"+0 +"', '"+ 0 + "' , '"+id_tournoi+"')";
