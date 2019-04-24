@@ -1,5 +1,5 @@
 <% include header.ejs %>
-<h1>Créer un Tournoi</h1>
+
     <div class="container">
         <% if (message != '') { %>
             <p class="text-center text-danger"><%= message %></p>
@@ -48,8 +48,38 @@
     </div>
 </div>
 
-<!-- Add Table dependend of INT value -->
+<!-- Modal Add Player -->
+<div id="modal_add_player" class="modal" style="max-width: 60%;">
+  <!-- Just To Insert the Id In Js-->
+  <input id="input_hidden_id" type="hidden" value="">
+
+  <h2 class="text-center">Ajouter un joueur</h2>
+  <hr>
+
+  <!-- Form Add Player -->
+  <form class="form-inline" style="display: flex;justify-content: center;">
+    <div class="form-group mx-sm-3 mb-2">
+      <input type="text" class="form-control" name="last_name" placeholder="Nom">
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+      <input type="text" class="form-control" name="first_name" placeholder="Prénom">
+    </div>
+    <a href="/add-player" class="btn btn-primary mb-2">Inscrire</a>
+  </form>
+
+  <h2 class="mt-5 text-center">Liste des joueurs</h2>
+  <hr>
+
+  <% players.forEach((player, index) => { %>
+    <a rel="modal:close" href="#" onClick="retrieve_name('<%= player.nom%> <%= player.prenom %>')"><%= player.nom%> <%= player.prenom %></a> <br>
+  <% }) %>
+
+  <a href="#" rel="modal:close">Close</a>
+</div>
+
+<!-- Add Table dependend of INT value (nb table) -->
 <script type="text/javascript">
+  // alert($("#1_NORD").val());
   $(document).ready(function ()
   {
     var nb_tables_object = document.getElementById('nb_tables');
@@ -63,13 +93,28 @@
 
       for (var i = 1; i <= nb_tables_value; i++)
       {
-        var tr = '<tr><th scope="row">'+i+'</th><td><input name="nord" type="text"></td><td><input name="sud" type="text"></td><td><input name="est" type="text"></td><td><input name="ouest" type="text"></td></tr>';
+        var tr = '<tr><th scope="row"><input type="hidden" name="array_id[]"/>'+i+'</th><td><p><a onClick="retrieve_id(\''+i+'_NORD\')" style="text-decoration: none;color:gray;" href="#modal_add_player" rel="modal:open"><span id="'+i+'_NORD">Ajouter</span></a></p></td><td><p><a onClick="retrieve_id(\''+i+'_SUD\')" style="text-decoration: none;color:gray;" href="#modal_add_player" rel="modal:open"><span id="'+i+'_SUD">Ajouter</span></a></p></td><td><p><a onClick="retrieve_id(\''+i+'_EST\')" style="text-decoration: none;color:gray;" href="#modal_add_player" rel="modal:open"><span id="'+i+'_EST">Ajouter</span></a></p></td><td><p><a onClick="retrieve_id(\''+i+'_OUEST\')" style="text-decoration: none;color:gray;" href="#modal_add_player" rel="modal:open"><span id="'+i+'_OUEST">Ajouter</span></a></p></td></tr>';
         $("form table tbody").append(tr);
       }
 
     });
 
   });
+  function retrieve_id(id)
+  {
+    $("#input_hidden_id").val(id);
+  }
+  function retrieve_name(player_name)
+  {
+    var id = $("#input_hidden_id").val();
+    var name = id.split('_');
+    name = name[1];
+    var selector = $("#"+id);
+    var input = "<input type='text' value='"+player_name+"' name='"+name+"' required>"
+    selector.text("");
+    selector.append(input);
+    $("#"+id+" input").css("color","green");
+  }
 </script>
 
 </body>
