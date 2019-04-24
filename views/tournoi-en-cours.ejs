@@ -22,6 +22,7 @@
 
 
         <% if (tables.length > 0 && joueurs.length >0) { %>
+            <% classement_nord = 0; classement_sud=0; classement_est=0; classement_ouest=0; %>
             <% tables.forEach((table, index) => { %>
                 <% joueurs.forEach((joueur, index) => { %>
                 <% if(nb_tour <= tour_max) { %>
@@ -40,6 +41,14 @@
                     <% if(joueur.id == table.ouest){ %>
                         <% ouest=joueur.nom+' '+joueur.prenom; %>
                         <% score_ouest = -(score_nord+score_est+score_sud); %>
+                    <% } %>
+                    <% list_score = [score_nord, score_est, score_sud, score_ouest]; %>
+                    <% list_score.sort(function (a,b) { return -(a - b); }); %>
+                    <% for (let i=0; i<list_score.length; i++){ %>
+                        <% if(list_score[i]==score_nord){classement_nord=i+1;} %>
+                        <% if(list_score[i]==score_sud){classement_sud=i+1;} %>
+                        <% if(list_score[i]==score_est){classement_est=i+1;} %>
+                        <% if(list_score[i]==score_ouest){classement_ouest=i+1;} %>
                     <% } %>
                 <% }}) %>
             <table class="table table-hovered col-md-9">
@@ -75,6 +84,13 @@
                             <input type='hidden' name='score_est' value="<%= score_est %>" >
                             <td><%= score_ouest %></td>
                             <input type='hidden'  name='score_ouest' value="<%= score_ouest %>" >
+                        </tr>
+                        <tr>
+                            <th scope="row">Classement</th>
+                            <td><%= classement_nord %></td>
+                            <td><%= classement_sud %></td>
+                            <td><%= classement_est %></td>
+                            <td><%= classement_ouest %></td>
                         </tr>
                     <% }) %>
                 </tbody>
