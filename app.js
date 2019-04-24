@@ -56,11 +56,14 @@ app.get('/tournois/:id', afficheTournoi);
 app.get('/statistics', afficheScore);
 app.get('/statistics', afficheScoreTable);
 app.get('/tournoi/:id/recap', recapTournoi);
+app.get('/add-player', addPlayerPage);
+
 //post
 app.post('/tournois/:id', afficheTournoi);
 app.post('/add-tournoi', addTournoi);
 app.post('/add', addPlayer);
 app.post('/edit/:id', editPlayer);
+app.post('/tournoi/:id/recap', recapTournoi);
 
 // set the app to listen on the port
 app.listen(port, () => {
