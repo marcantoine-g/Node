@@ -5,6 +5,7 @@
             <table class="table table-hovered">
                 <thead class="thead-dark">
                     <tr>
+                        <th scope="col">ID</th>
                         <th scope="col">Nom joueur</th>
                         <th scope="col">Prénom joueur</th>
                         <th scope="col">Score</th>
@@ -14,9 +15,9 @@
                     <% joueurs.forEach((joueur, index) => { %>
                         <tr>
                             <th scope="row"><%= joueur.id %></th>
-                            <td><%= joueur.first_name %></td>
-                            <td><%= joueur.last_name %></td>
-                            <td><%= joueur.score %></td>
+                            <td><%= joueur.prenom %></td>
+                            <td><%= joueur.nom %></td>
+                            <td><%= joueur.classement %></td>
                         </tr>
                     <% }) %>
                 </tbody>

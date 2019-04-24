@@ -61,6 +61,7 @@ app.get('/add-player', addPlayerPage);
 //post
 app.post('/tournois/:id', afficheTournoi);
 app.post('/add-tournoi', addTournoi);
+app.post('/add-player', addPlayer);
 app.post('/add', addPlayer);
 app.post('/edit/:id', editPlayer);
 app.post('/tournoi/:id/recap', recapTournoi);

@@ -2,11 +2,11 @@
 
     <h1>Tournoi numéro <%= tournoiId %></h1>
     <form class="add-player-form" action="" method="post" enctype="multipart/form-data">
+        <% if(!changer_bouton) { %>
         <label>Tour numéro : <%= nb_tour %> sur <%= tour_max %></label>
         <input type='hidden' name='nb_tour' id='nb_tour' value="<%= nb_tour %>" >
-        <% if(nb_tour<tour_max) { %>
         <button type="submit" class="btn btn-sm btn-success">Tour suivant</button>
-        <% } else { %>
+        <% } else {  %>
         <a href="/tournoi/<%= tournoiId %>/recap" class="btn btn-sm btn-danger">Finir le Tournoi</a>
         <% } %>
     <div class="table-wrapper">
@@ -24,23 +24,24 @@
         <% if (tables.length > 0 && joueurs.length >0) { %>
             <% tables.forEach((table, index) => { %>
                 <% joueurs.forEach((joueur, index) => { %>
-                    <% if(joueur.id = table.nord){ %>
+                <% if(nb_tour <= tour_max) { %>
+                    <% if(joueur.id == table.nord){ %>
                         <% nord=joueur.nom+' '+joueur.prenom; %>
                         <% score_nord = getRandomIntInclusive(-50,50); %>
                     <% } %>
-                    <% if(joueur.id = table.sud){ %>
+                    <% if(joueur.id == table.sud){ %>
                         <% sud=joueur.nom+' '+joueur.prenom; %>
                         <% score_sud = getRandomIntInclusive(-50,50);; %>
                     <% } %>
-                    <% if(joueur.id = table.est){ %>
+                    <% if(joueur.id == table.est){ %>
                         <% est=joueur.nom+' '+joueur.prenom; %>
                         <% score_est = getRandomIntInclusive(-50,50);; %>
                     <% } %>
-                    <% if(joueur.id = table.ouest){ %>
+                    <% if(joueur.id == table.ouest){ %>
                         <% ouest=joueur.nom+' '+joueur.prenom; %>
                         <% score_ouest = -(score_nord+score_est+score_sud); %>
                     <% } %>
-                <% }) %>
+                <% }}) %>
             <table class="table table-hovered col-md-9">
                 <thead class="thead-dark">
                     <tr>
