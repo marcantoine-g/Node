@@ -1,13 +1,14 @@
 <% include header.ejs %>
 
-    <h1>Tournoi numéro <%= tournoiId %> </h1>
+    <h1>Tournoi numéro <%= tournoiId %></h1>
     <form class="add-player-form" action="" method="post" enctype="multipart/form-data">
-        <label>Tour numéro : <%= nb_tour %></label>
+        <label>Tour numéro : <%= nb_tour %> sur <%= tour_max %></label>
         <input type='hidden' name='nb_tour' id='nb_tour' value="<%= nb_tour %>" >
+        <% if(nb_tour<tour_max) { %>
         <button type="submit" class="btn btn-sm btn-success">Tour suivant</button>
-    <% if (msg !="") { %>
-        <p><%= msg %></p>
-    <% } %>
+        <% } else { %>
+        <a href="/tournoi/<%= tournoiId %>/recap" class="btn btn-sm btn-danger">Finir le Tournoi</a>
+        <% } %>
     <div class="table-wrapper">
         <%     
         // Fonction permettant de générer des nombres aléatoires
@@ -55,9 +56,13 @@
                         <tr>
                             <th scope="row">Nom et Prénom</th>
                             <td><%= nord %></td>
+                            <input type='hidden' name='joueur_nord' value="<%= table.nord %>" >
                             <td><%= sud %></td>
+                            <input type='hidden' name='joueur_sud' value="<%= table.sud %>" >
                             <td><%= est %></td>
+                            <input type='hidden' name='joueur_est' value="<%= table.est %>" >
                             <td><%= ouest %></td>
+                            <input type='hidden' name='joueur_ouest' value="<%= table.ouest %>" >
                         </tr>
                         <tr>
                             <th scope="row">Score</th>

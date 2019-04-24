@@ -187,19 +187,43 @@ module.exports = {
         let queryTournoiEnCours = "SELECT * FROM `tournoi` WHERE id =" + tournoiId;
         let queryTable = "SELECT * FROM `table` WHERE `id_tournoi`=" + tournoiId;
         let queryJoueur = "SELECT * FROM `joueur` WHERE `id_tournoi` = " + tournoiId;
-        let msg ="";
+        let queryTournoiFini = "UPDATE `tournoi` SET `encours`=0 WHERE `id_tournoi` = "+tournoiId;
         let nb_tour = 1;
 
+        if (req.body.table_id){
+            let table_id = req.body.table_id;
+            let joueur_nord = req.body.joueur_nord;
+            let joueur_sud = req.body.joueur_sud;
+            let joueur_est = req.body.joueur_est;
+            let joueur_ouest = req.body.joueur_sud;
+            let score_nord = req.body.score_nord;
+            let score_sud = req.body.score_sud;
+            let score_est = req.body.score_est;
+            let score_ouest = req.body.score_ouest;
 
-            console.log(req.body);
-
-                                             
-// db.query("UPDATES `joueur`SET `score` ="+score_nord+" WHERE id="+table.nord);
-// db.query("UPDATES `joueur`SET `score` ="+score_sud+" WHERE id="+table.sud);
-// db.query("UPDATES `joueur`SET `score` ="+score_est+" WHERE id="+table.est);
-// db.query("UPDATES `joueur`SET `score` ="+score_ouest+" WHERE id="+table.ouest);
-
-// INSERER LES SCORE recupérer
+            for(let i=0; i<table_id.length; i++){
+                db.query("UPDATE `joueur` SET `score` ="+score_nord[i]+" WHERE `id`="+joueur_nord[i] , (err,result)=>{
+                    if (err){
+                        return res.status(500).send(err);
+                    }
+                });
+                db.query("UPDATE `joueur` SET `score` ="+score_sud[i]+" WHERE `id`="+joueur_sud[i] , (err,result)=>{
+                    if (err){
+                        return res.status(500).send(err);
+                    }
+                });
+                db.query("UPDATE `joueur` SET `score` ="+score_est[i]+" WHERE `id`="+joueur_est[i] , (err,result)=>{
+                    if (err){
+                        return res.status(500).send(err);
+                    }
+                });
+                db.query("UPDATE `joueur` SET `score` ="+score_ouest[i]+" WHERE `id`="+joueur_ouest[i] , (err,result)=>{
+                    if (err){
+                        return res.status(500).send(err);
+                    }
+                });
+            }
+        }
 
         db.query(queryTournoiEnCours, (err, result) => {
             if (err) {
@@ -208,11 +232,7 @@ module.exports = {
             Object.keys(result).forEach(function (key) {
                 var row = result[key];
                 if (row.encours == 0) { // tournoi pas en cours => déjà passé , afficher les scores du tournoi passé (via bouton menu auquel on passe un id ?)
-                    res.render('tournoi-creation.ejs', {
-                        title: 'Mon tournoi de Tarot',
-                        tournoiId: tournoiId,
-                        tournoi: result
-                    });
+                    res.redirect('/tournoi/'+tournoiId+'/recap');
                 }
                 else {
                     tour_max=row.tour;
@@ -230,10 +250,6 @@ module.exports = {
                             if(req.body.nb_tour){
                                 if(req.body.nb_tour < tour_max ) {
                                     nb_tour = parseInt(req.body.nb_tour)+ 1;
-
-                                } else {
-                                    nb_tour = parseInt(req.body.nb_tour);
-                                    msg="Il n'y a pas de tour suivant";
                                 }
                             }
                             
@@ -243,11 +259,23 @@ module.exports = {
                                 joueurs: joueurs,
                                 tournoiId: tournoiId,
                                 nb_tour: nb_tour,
-                                msg : msg
+                                tour_max,
                             });
                         });
                     });
                 }
+            });
+        });
+    },
+    recapTournoi : (req, res) => {
+        let tournoiId = req.params.id;
+        let queryTournoiFini = "UPDATE `tournoi` SET `encours`=0 WHERE `id` = "+tournoiId;
+        db.query(queryTournoiFini , (err, result)=> {
+            if (err) {
+            return res.status(500).send(err);
+            }
+            res.render('recap-tournoi.ejs', {
+                tournoiId : tournoiId
             });
         });
     }
