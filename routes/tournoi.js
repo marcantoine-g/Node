@@ -182,29 +182,73 @@ module.exports = {
                     res.redirect('/tournois');
                 });
     },
-    afficheTournoi: (req,res) => {
+    afficheTournoi: (req, res) => {
         let tournoiId = req.params.id;
+        let queryTournoiEnCours = "SELECT * FROM `tournoi` WHERE id =" + tournoiId;
+        let queryTable = "SELECT * FROM `table` WHERE `id_tournoi`=" + tournoiId;
+        let queryJoueur = "SELECT * FROM `joueur` WHERE `id_tournoi` = " + tournoiId;
+        let msg ="";
+        let nb_tour = 1;
 
-        let queryTournoiEnCours = "SELECT encours FROM `tournoi` WHERE id ="+tournoiId;
-        let queryJoeurs = "SELECT * FROM `joueur`";
+
+            console.log(req.body);
+
+                                             
+// db.query("UPDATES `joueur`SET `score` ="+score_nord+" WHERE id="+table.nord);
+// db.query("UPDATES `joueur`SET `score` ="+score_sud+" WHERE id="+table.sud);
+// db.query("UPDATES `joueur`SET `score` ="+score_est+" WHERE id="+table.est);
+// db.query("UPDATES `joueur`SET `score` ="+score_ouest+" WHERE id="+table.ouest);
+
+// INSERER LES SCORE recupérer
 
         db.query(queryTournoiEnCours, (err, result) => {
             if (err) {
                 return res.status(500).send(err);
             }
-            Object.keys(result).forEach(function(key) {
+            Object.keys(result).forEach(function (key) {
                 var row = result[key];
-                if( row.encours == 0) {
+                if (row.encours == 0) { // tournoi pas en cours => déjà passé , afficher les scores du tournoi passé (via bouton menu auquel on passe un id ?)
                     res.render('tournoi-creation.ejs', {
-                        title : 'Mon tournoi de Tarot',
-                        tournoiId : tournoiId,
-
+                        title: 'Mon tournoi de Tarot',
+                        tournoiId: tournoiId,
+                        tournoi: result
                     });
-                } else {
-                    res.send("<p>Le tournoi est déjà lancé</p>");
+                }
+                else {
+                    tour_max=row.tour;
+                    db.query(queryTable, (err, result) => {
+                        if (err) {
+                            return res.status(500).send(err);
+                        }
+                        tables = result;
+                        db.query(queryJoueur, (err, result) => {
+                            if (err) {
+                                return res.status(500).send(err);
+                            }
+                            joueurs = result;
+
+                            if(req.body.nb_tour){
+                                if(req.body.nb_tour < tour_max ) {
+                                    nb_tour = parseInt(req.body.nb_tour)+ 1;
+
+                                } else {
+                                    nb_tour = parseInt(req.body.nb_tour);
+                                    msg="Il n'y a pas de tour suivant";
+                                }
+                            }
+                            
+                            res.render('tournoi-en-cours.ejs', {
+                                title: 'Mon tournoi de Tarot',
+                                tables: tables,
+                                joueurs: joueurs,
+                                tournoiId: tournoiId,
+                                nb_tour: nb_tour,
+                                msg : msg
+                            });
+                        });
+                    });
                 }
             });
         });
     }
-
 };

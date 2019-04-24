@@ -1,0 +1,83 @@
+<% include header.ejs %>
+
+    <h1>Tournoi numéro <%= tournoiId %> </h1>
+    <form class="add-player-form" action="" method="post" enctype="multipart/form-data">
+        <label>Tour numéro : <%= nb_tour %></label>
+        <input type='hidden' name='nb_tour' id='nb_tour' value="<%= nb_tour %>" >
+        <button type="submit" class="btn btn-sm btn-success">Tour suivant</button>
+    <% if (msg !="") { %>
+        <p><%= msg %></p>
+    <% } %>
+    <div class="table-wrapper">
+        <%     
+        // Fonction permettant de générer des nombres aléatoires
+        function getRandomIntInclusive(min, max) {
+            if ( nb_tour == 1) { return 0;}
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min +1)) + min;
+        } 
+        %>
+
+
+        <% if (tables.length > 0 && joueurs.length >0) { %>
+            <% tables.forEach((table, index) => { %>
+                <% joueurs.forEach((joueur, index) => { %>
+                    <% if(joueur.id = table.nord){ %>
+                        <% nord=joueur.nom+' '+joueur.prenom; %>
+                        <% score_nord = getRandomIntInclusive(-50,50); %>
+                    <% } %>
+                    <% if(joueur.id = table.sud){ %>
+                        <% sud=joueur.nom+' '+joueur.prenom; %>
+                        <% score_sud = getRandomIntInclusive(-50,50);; %>
+                    <% } %>
+                    <% if(joueur.id = table.est){ %>
+                        <% est=joueur.nom+' '+joueur.prenom; %>
+                        <% score_est = getRandomIntInclusive(-50,50);; %>
+                    <% } %>
+                    <% if(joueur.id = table.ouest){ %>
+                        <% ouest=joueur.nom+' '+joueur.prenom; %>
+                        <% score_ouest = -(score_nord+score_est+score_sud); %>
+                    <% } %>
+                <% }) %>
+            <table class="table table-hovered col-md-9">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">TABLE N° <%= table.id %></th>
+                        <input type='hidden' name='table_id' value="<%= table.id %>" >
+                        <th scope="col">NORD</th>
+                        <th scope="col">SUD</th>
+                        <th scope="col">EST</th>
+                        <th scope="col">OUEST</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                            <th scope="row">Nom et Prénom</th>
+                            <td><%= nord %></td>
+                            <td><%= sud %></td>
+                            <td><%= est %></td>
+                            <td><%= ouest %></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Score</th>
+                            <td><%= score_nord %></td>
+                            <input type='hidden'  name='score_nord' value="<%= score_nord %>" >
+                            <td ><%= score_sud %></td>
+                            <input type='hidden' name='score_sud' value="<%= score_sud %>" >
+                            <td ><%= score_est %></td>
+                            <input type='hidden' name='score_est' value="<%= score_est %>" >
+                            <td><%= score_ouest %></td>
+                            <input type='hidden'  name='score_ouest' value="<%= score_ouest %>" >
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p class="text-center">Aucun tournois trouvés, allez <a href="/add-tournoi" >ici</a> pour créer un tournoi.</p>
+        <% } %>
+    </form>
+    </div>
+</div>
+</body>
+</html>
