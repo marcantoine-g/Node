@@ -22,7 +22,7 @@
 
 
         <% if (tables.length > 0 && joueurs.length >0) { %>
-            <% classement_nord = 0; classement_sud=0; classement_est=0; classement_ouest=0; %>
+            <% classement_nord = 0; classement_sud=0; classement_est=0; classement_ouest=0; score_nord='' ; score_sud='';score_est='';score_ouest=''; meilleur_score=0;%>
             <% tables.forEach((table, index) => { %>
                 <% joueurs.forEach((joueur, index) => { %>
                 <% if(nb_tour <= tour_max) { %>
@@ -42,6 +42,7 @@
                         <% ouest=joueur.nom+' '+joueur.prenom; %>
                         <% score_ouest = -(score_nord+score_est+score_sud); %>
                     <% } %>
+                    <% if(score_est!=='' && score_nord!=='' && score_sud!=='' && score_ouest!=='') { %>
                     <% list_score = [score_nord, score_est, score_sud, score_ouest]; %>
                     <% list_score.sort(function (a,b) { return -(a - b); }); %>
                     <% for (let i=0; i<list_score.length; i++){ %>
@@ -50,6 +51,7 @@
                         <% if(list_score[i]==score_est){classement_est=i+1;} %>
                         <% if(list_score[i]==score_ouest){classement_ouest=i+1;} %>
                     <% } %>
+                    <% }%>
                 <% }}) %>
             <table class="table table-hovered col-md-9">
                 <thead class="thead-dark">

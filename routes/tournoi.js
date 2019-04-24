@@ -204,7 +204,7 @@ module.exports = {
             let joueur_nord = req.body.joueur_nord;
             let joueur_sud = req.body.joueur_sud;
             let joueur_est = req.body.joueur_est;
-            let joueur_ouest = req.body.joueur_sud;
+            let joueur_ouest = req.body.joueur_ouest;
             let score_nord = req.body.score_nord;
             let score_sud = req.body.score_sud;
             let score_est = req.body.score_est;
@@ -212,45 +212,46 @@ module.exports = {
 
             for(let i=0; i<table_id.length; i++){
                 if(Array.isArray(score_nord)){
-                    score_nord = score_nord[i];
-                }
+                    score_nord_tmp = score_nord[i];
+                } else { score_nord_tmp = score_nord; }
                 if(Array.isArray(score_sud)){
-                    score_sud = score_sud[i];
-                }
+                    score_sud_tmp = score_sud[i];
+                } else{score_sud_tmp = score_sud;}
                 if(Array.isArray(score_est)){
-                    score_est = score_est[i];
-                }
+                    score_est_tmp = score_est[i];
+                }else{score_est_tmp = score_est;}
                 if(Array.isArray(score_ouest)){
-                    score_ouest = score_ouest[i];
-                }
+                    score_ouest_tmp = score_ouest[i];
+                }else {score_ouest_tmp = score_ouest;}
                 if(Array.isArray(joueur_nord)){
-                    joueur_nord = joueur_nord[i];
-                }
+                    joueur_nord_tmp = joueur_nord[i];
+                }else{joueur_nord_tmp = joueur_nord;}
                 if(Array.isArray(joueur_sud)){
-                    joueur_sud = joueur_sud[i];
-                }
+                    joueur_sud_tmp = joueur_sud[i];
+                }else {joueur_sud_tmp = joueur_sud;}
                 if(Array.isArray(joueur_est)){
-                    joueur_est = joueur_est[i];
-                }
+                    joueur_est_tmp = joueur_est[i];
+                } else{joueur_est_tmp = joueur_est;}
                 if(Array.isArray(joueur_ouest)){
-                    joueur_ouest = joueur_ouest[i];
-                }
-                db.query("UPDATE `joueur` SET `score` ="+score_nord+" WHERE `id`="+joueur_nord , (err,result)=>{
+                    joueur_ouest_tmp = joueur_ouest[i];
+                } else {joueur_ouest_tmp = joueur_ouest;}
+
+                db.query("UPDATE `joueur` SET `score` ="+score_nord_tmp+" WHERE `id`="+joueur_nord_tmp , (err,result)=>{
                     if (err){
                         return res.status(500).send(err);
                     }
                 });
-                db.query("UPDATE `joueur` SET `score` ="+score_sud+" WHERE `id`="+joueur_sud , (err,result)=>{
+                db.query("UPDATE `joueur` SET `score` ="+score_sud_tmp+" WHERE `id`="+joueur_sud_tmp , (err,result)=>{
                     if (err){
                         return res.status(500).send(err);
                     }
                 });
-                db.query("UPDATE `joueur` SET `score` ="+score_est+" WHERE `id`="+joueur_est , (err,result)=>{
+                db.query("UPDATE `joueur` SET `score` ="+score_est_tmp+" WHERE `id`="+joueur_est_tmp , (err,result)=>{
                     if (err){
                         return res.status(500).send(err);
                     }
                 });
-                db.query("UPDATE `joueur` SET `score` ="+score_ouest+" WHERE `id`="+joueur_ouest , (err,result)=>{
+                db.query("UPDATE `joueur` SET `score` ="+score_ouest_tmp+" WHERE `id`="+joueur_ouest_tmp , (err,result)=>{
                     if (err){
                         return res.status(500).send(err);
                     }
@@ -264,7 +265,7 @@ module.exports = {
             }
             Object.keys(result).forEach(function (key) {
                 var row = result[key];
-                if (row.encours == 0) { // tournoi pas en cours => déjà passé , afficher les scores du tournoi passé (via bouton menu auquel on passe un id ?)
+                if (row.encours == 0) {
                     res.redirect('/tournoi/'+tournoiId+'/recap');
                 }
                 else {
@@ -305,40 +306,40 @@ module.exports = {
     },
     recapTournoi : (req, res) => {
         
-        if (req.body.table_id){
-            let table_id = req.body.table_id;
-            let joueur_nord = req.body.joueur_nord;
-            let joueur_sud = req.body.joueur_sud;
-            let joueur_est = req.body.joueur_est;
-            let joueur_ouest = req.body.joueur_sud;
-            let score_nord = req.body.score_nord;
-            let score_sud = req.body.score_sud;
-            let score_est = req.body.score_est;
-            let score_ouest = req.body.score_ouest;
+        // if (req.body.table_id){
+        //     let table_id = req.body.table_id;
+        //     let joueur_nord = req.body.joueur_nord;
+        //     let joueur_sud = req.body.joueur_sud;
+        //     let joueur_est = req.body.joueur_est;
+        //     let joueur_ouest = req.body.joueur_sud;
+        //     let score_nord = req.body.score_nord;
+        //     let score_sud = req.body.score_sud;
+        //     let score_est = req.body.score_est;
+        //     let score_ouest = req.body.score_ouest;
 
-            for(let i=0; i<table_id.length; i++){
-                db.query("UPDATE `joueur` SET `score` ="+score_nord[i]+" WHERE `id`="+joueur_nord[i] , (err,result)=>{
-                    if (err){
-                        return res.status(500).send(err);
-                    }
-                });
-                db.query("UPDATE `joueur` SET `score` ="+score_sud[i]+" WHERE `id`="+joueur_sud[i] , (err,result)=>{
-                    if (err){
-                        return res.status(500).send(err);
-                    }
-                });
-                db.query("UPDATE `joueur` SET `score` ="+score_est[i]+" WHERE `id`="+joueur_est[i] , (err,result)=>{
-                    if (err){
-                        return res.status(500).send(err);
-                    }
-                });
-                db.query("UPDATE `joueur` SET `score` ="+score_ouest[i]+" WHERE `id`="+joueur_ouest[i] , (err,result)=>{
-                    if (err){
-                        return res.status(500).send(err);
-                    }
-                });
-            }
-        }
+        //     for(let i=0; i<table_id.length; i++){
+        //         db.query("UPDATE `joueur` SET `score` ="+score_nord[i]+" WHERE `id`="+joueur_nord[i] , (err,result)=>{
+        //             if (err){
+        //                 return res.status(500).send(err);
+        //             }
+        //         });
+        //         db.query("UPDATE `joueur` SET `score` ="+score_sud[i]+" WHERE `id`="+joueur_sud[i] , (err,result)=>{
+        //             if (err){
+        //                 return res.status(500).send(err);
+        //             }
+        //         });
+        //         db.query("UPDATE `joueur` SET `score` ="+score_est[i]+" WHERE `id`="+joueur_est[i] , (err,result)=>{
+        //             if (err){
+        //                 return res.status(500).send(err);
+        //             }
+        //         });
+        //         db.query("UPDATE `joueur` SET `score` ="+score_ouest[i]+" WHERE `id`="+joueur_ouest[i] , (err,result)=>{
+        //             if (err){
+        //                 return res.status(500).send(err);
+        //             }
+        //         });
+        //     }
+        // }
 
         let tournoiId = req.params.id;
         let queryTournoiFini = "UPDATE `tournoi` SET `encours`=0 WHERE `id` = "+tournoiId;
