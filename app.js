@@ -10,7 +10,7 @@ const ejsLint = require('ejs-lint');
 
 const {getHomePage} = require('./routes/index');
 const {addPlayerPage, addPlayer, deletePlayer, editPlayer, editPlayerPage, listPlayerPage, afficheScore, afficheScoreTable} = require('./routes/player');
-const {afficheTournois, addTournoiPage, addTournoi, deleteTournoi, afficheTournoi} = require('./routes/tournoi');
+const {afficheTournois, addTournoiPage, addTournoi, deleteTournoi, afficheTournoi, recapTournoi} = require('./routes/tournoi');
 
 const port = 5000;
 
@@ -55,6 +55,7 @@ app.get('/delete-tournoi/:id', deleteTournoi);
 app.get('/tournois/:id', afficheTournoi);
 app.get('/statistics', afficheScore);
 app.get('/statistics', afficheScoreTable);
+app.get('/tournoi/:id/recap', recapTournoi);
 //post
 app.post('/tournois/:id', afficheTournoi);
 app.post('/add-tournoi', addTournoi);

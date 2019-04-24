@@ -187,7 +187,6 @@ module.exports = {
         let queryTournoiEnCours = "SELECT * FROM `tournoi` WHERE id =" + tournoiId;
         let queryTable = "SELECT * FROM `table` WHERE `id_tournoi`=" + tournoiId;
         let queryJoueur = "SELECT * FROM `joueur` WHERE `id_tournoi` = " + tournoiId;
-        let queryTournoiFini = "UPDATE `tournoi` SET `encours`=0 WHERE `id_tournoi` = "+tournoiId;
         let nb_tour = 1;
 
         if (req.body.table_id){
@@ -270,13 +269,49 @@ module.exports = {
     recapTournoi : (req, res) => {
         let tournoiId = req.params.id;
         let queryTournoiFini = "UPDATE `tournoi` SET `encours`=0 WHERE `id` = "+tournoiId;
+        let queryJoueur = "SELECT * FROM `joueur` WHERE `id_tournoi` = " + tournoiId;
+
         db.query(queryTournoiFini , (err, result)=> {
             if (err) {
-            return res.status(500).send(err);
+                return res.status(500).send(err);
             }
-            res.render('recap-tournoi.ejs', {
-                tournoiId : tournoiId
+        });
+
+        db.query(queryJoueur , (err,result)=>{
+            if (err) {
+                return res.status(500).send(err);
+            }
+            joueurs = result;
+
+            let classement = Array(joueurs.length);
+            for (let i=0; i<joueurs.length; i++){
+                classement[i] = {id: joueurs[i].id, score: joueurs[i].score};
+            }
+
+            classement.sort(function (a,b) {
+                return -(a.score - b.score);
             });
+
+            for (let i=0; i<classement.length; i++){
+                let queryAssignementClassement = "UPDATE `joueur` SET `classement` ="+parseInt(i+1)+" WHERE `id`="+classement[i].id;
+                db.query(queryAssignementClassement , (err, result)=> {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+                });
+            }
+            let querySortClassement = "SELECT * FROM `joueur` WHERE `id_tournoi` = "+tournoiId+" ORDER BY `classement`";
+                db.query(querySortClassement , (err, result)=> {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+                    joueurs = result;
+                    res.render('recap-tournoi.ejs', {
+                        tournoiId : tournoiId,
+                        joueurs : joueurs
+                    });
+                });  
+
         });
     }
 };
