@@ -1,5 +1,7 @@
 # Projet Node
 
+Lien vers l'app : Node/app.js
+
 FONCTIONNALITES PRESENTES
 --------------
 - saisir au début du tournoi la liste des joueurs
